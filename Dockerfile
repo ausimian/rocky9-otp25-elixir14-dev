@@ -21,12 +21,14 @@ RUN  cd otp_src_25.2.2 && \
 
 FROM rockylinux:9
 RUN  yum -y update
-RUN  yum -y install wget unzip
+RUN  yum -y install wget unzip glibc-locale-source glibc-langpack-en
 COPY --from=builder /tmp/otp/usr/local /usr/local
 RUN  cd /usr/local && \
      wget --quiet https://github.com/elixir-lang/elixir/releases/download/v1.14.3/elixir-otp-25.zip && \
      unzip elixir-otp-25.zip && \
      rm -f elixir-otp-25.zip
+RUN  localedef -c -f UTF-8 -i en_US en_US.UTF-8
+ENV  LC_ALL=en_US.UTF-8
 
 RUN  mix local.hex --force
 RUN  mix local.rebar --force
